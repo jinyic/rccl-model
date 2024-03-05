@@ -59,7 +59,6 @@ def main():
     parser.add_argument("--resume", action="store_true", help="Resume training from saved checkpoint.")
     argv = parser.parse_args()
 
-    local_rank = argv.local_rank
     num_epochs = argv.num_epochs
     batch_size = argv.batch_size
     learning_rate = argv.learning_rate
@@ -83,6 +82,8 @@ def main():
     # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
     torch.distributed.init_process_group(backend="nccl")
     # torch.distributed.init_process_group(backend="gloo")
+    
+    local_rank = torch.distributed.get_rank()
 
     # Encapsulate the model on the GPU assigned to the current process
     model = torchvision.models.resnet18(pretrained=False)
